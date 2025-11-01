@@ -43,17 +43,34 @@
 </head>
 <body>
   <h1>لوحة إدارة المشاريع</h1>
-  <p>المشاريع الحالية</p>
 
-  <form id="adminForm">
-    <input type="text" id="project" placeholder="اسم المشروع" required><br>
-    <input type="url" id="link" placeholder="رابط المشروع (Google Drive)" required><br>
-    <textarea id="desc" placeholder="وصف قصير للمشروع" required></textarea><br>
-    <button type="submit">إضافة المشروع</button>
-  </form>
+  <div id="login">
+    <input type="password" id="password" placeholder="أدخل كلمة السر" />
+    <button onclick="checkPassword()">دخول</button>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    <form id="adminForm">
+      <input type="text" id="project" placeholder="اسم المشروع" required><br>
+      <input type="url" id="link" placeholder="رابط المشروع (Google Drive)" required><br>
+      <textarea id="desc" placeholder="وصف قصير للمشروع" required></textarea><br>
+      <button type="submit">إضافة المشروع</button>
+    </form>
+  </div>
 
   <script>
-    // تحميل المشاريع الموجودة أو إنشاء قائمة جديدة
+    const PASSWORD = "school_9thgrade_00"; 
+
+    function checkPassword() {
+      const input = document.getElementById("password").value;
+      if (input === PASSWORD) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+      } else {
+        alert("❌ كلمة السر غير صحيحة");
+      }
+    }
+
     const projects = JSON.parse(localStorage.getItem("projects") || "[]");
 
     document.getElementById("adminForm").addEventListener("submit", e => {
@@ -67,7 +84,6 @@
 
       projects.push(data);
 
-      // إنشاء ملف JSON وحفظه
       const blob = new Blob([JSON.stringify(projects, null, 2)], { type: "application/json" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
