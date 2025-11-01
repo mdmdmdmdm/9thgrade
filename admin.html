@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>إدارة المشاريع - الصف التاسع</title>
+  <style>
+    body { font-family: "Lalezar", sans-serif; background: #f3f3f3; padding: 40px; text-align: center; }
+    h1 { color: #5a2d82; }
+    form { background: white; padding: 30px; border-radius: 20px; width: 500px; margin: auto; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+    input, textarea { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; }
+    button { background: #5a2d82; color: white; padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; }
+    button:hover { background: #7a4fb2; }
+  </style>
+</head>
+<body>
+  <h1>لوحة إدارة المشاريع</h1>
+  <h2>المشاريع الحالية</h2>
+<div id="projectsList"></div>
+
+<script>
+const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+const container = document.getElementById("projectsList");
+
+function renderProjects() {
+  container.innerHTML = "";
+  projects.forEach((p, index) => {
+    container.innerHTML += `
+      <div style="background:white; padding:10px; margin:10px; border-radius:10px;">
+        <strong>${p.project}</strong> - <a href="${p.link}" target="_blank">عرض المشروع</a>
+        <button onclick="deleteProject(${index})" style="margin-left:10px; background:red; color:white; border:none; border-radius:5px; cursor:pointer;">حذف</button>
+      </div>
+    `;
+  });
+}
+
+function deleteProject(index) {
+  if(confirm("هل أنت متأكدة من حذف هذا المشروع؟")){
+    projects.splice(index, 1);
+    localStorage.setItem("projects", JSON.stringify(projects));
+    renderProjects();
+  }
+}
+
+renderProjects();
+</script>
+
+
+  <script>
+    const password = prompt("أدخل كلمة المرور للوصول إلى لوحة الإدارة:");
+    if(password !== "school_9thgrade_00"){  
+      alert("كلمة المرور خاطئة!");
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <form id="adminForm">
+    <input type="text" id="project" placeholder="اسم المشروع" required><br>
+    <input type="url" id="link" placeholder="رابط المشروع (Google Drive)" required><br>
+    <textarea id="desc" placeholder="وصف المشروع" required></textarea><br>
+    <button type="submit">إضافة المشروع</button>
+  </form>
+
+  <script>
+    const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+
+    document.getElementById("adminForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const data = {
+        project: document.getElementById("project").value,
+        link: document.getElementById("link").value,
+        desc: document.getElementById("desc").value
+      };
+      projects.push(data);
+      localStorage.setItem("projects", JSON.stringify(projects));
+      alert("✅ تم إضافة المشروع بنجاح!");
+      document.getElementById("adminForm").reset();
+    });
+  </script>
+</body>
+</html>
